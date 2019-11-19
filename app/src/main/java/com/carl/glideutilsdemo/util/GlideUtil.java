@@ -2,12 +2,10 @@ package com.carl.glideutilsdemo.util;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -19,7 +17,6 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class GlideUtil {
-
 
     public static void show(String url, ImageView imageView) {
         show(url, imageView, 0);
@@ -43,55 +40,54 @@ public class GlideUtil {
 
     public static void show(String url, ImageView imageView, int resId, boolean isCircle, RequestListener listener) {
 
-
-        RequestBuilder<Drawable> drawableRequestBuilder = Glide.with(BaseApplication.getInstance())
-                .load(url);
+        RequestOptions options = new RequestOptions();
 
         if (0 != resId) {
-            drawableRequestBuilder = drawableRequestBuilder
-                    .placeholder(resId)
-                    .error(resId);
+            options = options.placeholder(resId)
+                    .error(resId)
+                    .dontAnimate();
+            //Glide的一个问题，不能用占位图，否则会变形，去掉动画就可以
         }
-
 
         if (isCircle) {
-            drawableRequestBuilder = drawableRequestBuilder.circleCrop();
+            options = options.circleCrop();
         }
 
-        if (null != listener) {
-            drawableRequestBuilder = drawableRequestBuilder.listener(listener);
-        }
-
-        drawableRequestBuilder.into(imageView);
-
+        Glide.with(BaseApplication.getInstance())
+                .load(url)
+                .apply(options)
+                .listener(listener)
+                .into(imageView);
     }
 
-
     public static void showBlur(String url, ImageView imageView, int radius) {
-        RequestBuilder<Drawable> drawableRequestBuilder = Glide.with(BaseApplication.getInstance())
-                .load(getUrl(imageView, url))
-                .apply(RequestOptions.bitmapTransform(new BlurTransformation(radius)))
+        RequestOptions options = RequestOptions.bitmapTransform(new BlurTransformation(radius))
                 .skipMemoryCache(true);
-        drawableRequestBuilder.into(imageView);
 
+        Glide.with(BaseApplication.getInstance())
+                .load(getUrl(imageView, url))
+                .apply(options)
+                .into(imageView);
     }
 
     public static void showRoundRadius(String url, ImageView imageView, int radius, int margin) {
+        RequestOptions options = RequestOptions.bitmapTransform(new RoundedCornersTransformation(radius, margin));
+
         Glide.with(BaseApplication.getInstance())
                 .load(url)
-                .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(radius, margin)))
+                .apply(options)
                 .into(imageView);
     }
 
 
     public static void showRoundRadius(String url, int phResId, int errorResId, ImageView imageView, int radius, RoundedCornersTransformation.CornerType type) {
+        RequestOptions options = RequestOptions.bitmapTransform(new RoundedCornersTransformation(radius, 0, type))
+                .placeholder(phResId)
+                .error(errorResId);
+
         Glide.with(BaseApplication.getInstance())
                 .load(url)
-//                .thumbnail(0.1f)
-                .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(radius, 0, type)))
-//                .skipMemoryCache(true)
-                .placeholder(phResId)
-                .error(errorResId)
+                .apply(options)
                 .into(imageView);
     }
 
@@ -102,10 +98,12 @@ public class GlideUtil {
     }
 
 
-    public static void loadShareBitmap(Activity activity, String imageUrl, SimpleTarget<Bitmap> target) {
-        Glide.with(activity).asBitmap().load(formatUrl(imageUrl, 150, 150)).into(target);
+    public static void loadShareBitmap(Activity activity, String imageUrl, SimpleTarget target) {
+        Glide.with(activity)
+                .asBitmap()
+                .load(formatUrl(imageUrl, 150, 150))
+                .into(target);
     }
-
 
     private static String getUrl(ImageView imageView, String url) {
         if (null == imageView) {
@@ -115,7 +113,6 @@ public class GlideUtil {
         int height = imageView.getHeight();
         return formatUrl(url, width, height);
     }
-
 
     private static String formatUrl(String url, int width, int height) {
         if (0 == width || 0 == height || StringUtil.isNullOrEmpty(url) || !url.startsWith("http") || !url.contains("cdn.azoyaclub.com")) {
@@ -131,5 +128,4 @@ public class GlideUtil {
     public static void loadBitmap(Context context, String url, SimpleTarget<Drawable> target, int width, int height) {
         Glide.with(context.getApplicationContext()).load(url).override(width, height).centerCrop().into(target);
     }
-
 }
