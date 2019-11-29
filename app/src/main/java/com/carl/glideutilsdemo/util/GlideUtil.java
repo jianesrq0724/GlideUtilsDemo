@@ -2,13 +2,14 @@ package com.carl.glideutilsdemo.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.carl.glideutilsdemo.BaseApplication;
 
 import java.util.Locale;
@@ -61,7 +62,8 @@ public class GlideUtil {
     }
 
     public static void showBlur(String url, ImageView imageView, int radius) {
-        RequestOptions options = RequestOptions.bitmapTransform(new BlurTransformation(radius))
+        RequestOptions options = RequestOptions
+                .bitmapTransform(new BlurTransformation(radius))
                 .skipMemoryCache(true);
 
         Glide.with(BaseApplication.getInstance())
@@ -98,7 +100,7 @@ public class GlideUtil {
     }
 
 
-    public static void loadShareBitmap(Activity activity, String imageUrl, SimpleTarget target) {
+    public static void loadShareBitmap(Activity activity, String imageUrl, CustomTarget<Bitmap> target) {
         Glide.with(activity)
                 .asBitmap()
                 .load(formatUrl(imageUrl, 150, 150))
@@ -125,7 +127,12 @@ public class GlideUtil {
         Glide.get(mActivity).clearMemory();
     }
 
-    public static void loadBitmap(Context context, String url, SimpleTarget<Drawable> target, int width, int height) {
-        Glide.with(context.getApplicationContext()).load(url).override(width, height).centerCrop().into(target);
+    public static void loadBitmap(Context context, String url, CustomTarget<Drawable> target, int width, int height) {
+        Glide.with(context.getApplicationContext())
+                .load(url)
+                .override(width, height)
+                .centerCrop()
+                .into(target);
     }
+
 }

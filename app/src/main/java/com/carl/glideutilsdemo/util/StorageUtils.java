@@ -49,8 +49,7 @@ public class StorageUtils {
     }
 
     private static File getExternalCacheDir(Context context, String subDir) {
-//        String path = "club/com.azoya.club";
-        String path = "Pictures";
+        String path = "club/com.azoya.club";
         File appCacheDir;
         if (StringUtil.isNullOrEmpty(path)) {
             File dataDir = new File(new File(Environment.getExternalStorageDirectory(), "Android"), "data");
@@ -58,8 +57,6 @@ public class StorageUtils {
         } else {
             File dataDir = new File(Environment.getExternalStorageDirectory(), path);
             appCacheDir = new File(dataDir, subDir);
-            // TODO: 2019/11/19  
-            appCacheDir = dataDir;
         }
         if (!appCacheDir.exists()) {
             if (!appCacheDir.mkdirs()) {

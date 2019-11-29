@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 .into(new CustomTarget<File>() {
                     @Override
                     public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
-//                        Bitmap bitmap = BitmapFactory.decodeFile(resource);
-
                         try {
                             FileInputStream fis = new FileInputStream(resource);
                             Bitmap bitmap = BitmapFactory.decodeStream(fis);
