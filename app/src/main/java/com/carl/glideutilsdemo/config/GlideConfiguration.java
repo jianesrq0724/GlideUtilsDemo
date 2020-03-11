@@ -1,4 +1,4 @@
-package com.carl.glideutilsdemo.util;
+package com.carl.glideutilsdemo.config;
 
 import android.content.Context;
 
@@ -12,6 +12,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
+import com.carl.glideutilsdemo.util.StorageUtils;
 
 /**
  * Glide 配置文件

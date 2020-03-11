@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Demo-GlideUtilsDemo.iml" filepath="$PROJECT_DIR$/Demo-GlideUtilsDemo.iml" group="GlideUtilsDemo" />
       <module fileurl="file://$PROJECT_DIR$/GlideUtilsDemo.iml" filepath="$PROJECT_DIR$/GlideUtilsDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/GlideUtilsDemo-app.iml" filepath="$PROJECT_DIR$/app/GlideUtilsDemo-app.iml" group="GlideUtilsDemo/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
