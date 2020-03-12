@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.carl.glideutilsdemo.BaseApplication;
 
+import java.io.File;
 import java.util.Locale;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -44,7 +45,8 @@ public class GlideUtil {
         RequestOptions options = new RequestOptions();
 
         if (0 != resId) {
-            options = options.placeholder(resId)
+            options = options
+//                    .placeholder(resId)
                     .error(resId)
                     .dontAnimate();
             //Glide的一个问题，不能用占位图，否则会变形，去掉动画就可以
@@ -97,6 +99,18 @@ public class GlideUtil {
         Glide.with(BaseApplication.getInstance())
                 .load(resId)
                 .into(mImage);
+    }
+
+    public static void showFile(File file, ImageView mImage, int resId) {
+        if (file.exists()) {
+            Glide.with(BaseApplication.getInstance())
+                    .load(file)
+                    .error(resId)
+                    .into(mImage);
+        } else {
+            showLocalDrawable(resId, mImage);
+        }
+
     }
 
 

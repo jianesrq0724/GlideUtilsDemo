@@ -17,12 +17,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.carl.glideutilsdemo.bean.ExtendedBean;
+import com.carl.glideutilsdemo.util.FileUtil;
 import com.carl.glideutilsdemo.util.GlideUtil;
+import com.carl.glideutilsdemo.util.StorageUtils;
+import com.carl.glideutilsdemo.util.StringUtil;
 import com.carl.glideutilsdemo.util.SystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView mIvTabFour;
     ImageView mIvTabFive;
 
-    ExtendedBean.TabIcons bean;
+    ExtendedBean.TabIcons bean = new ExtendedBean.TabIcons();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +57,68 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
 
 
-        setOneTabChecked(false, bean);
-        setTwoTabChecked(false, bean);
-        setThreeTabChecked(false, bean);
-        setFourTabChecked(false, bean);
-        setFiveTabChecked(false, bean);
+        if (bean != null) {
 
+            saveImageToLocal(bean.getIndex());
+            saveImageToLocal(bean.getIndexActive());
+
+            saveImageToLocal(bean.getSite());
+            saveImageToLocal(bean.getSiteActive());
+
+
+            saveImageToLocal(bean.getPd());
+            saveImageToLocal(bean.getPdActive());
+
+            saveImageToLocal(bean.getDiscover());
+            saveImageToLocal(bean.getDiscoverActive());
+
+
+            saveImageToLocal(bean.getMy());
+            saveImageToLocal(bean.getMyActive());
+        }
+
+
+
+
+    }
+
+    private void saveImageToLocal(final String url) {
+        if (!StringUtil.isNullOrEmpty(url)) {
+
+            final File targetFile = StorageUtils.getTargetFile(this, url);
+            if (targetFile.exists()) {
+                return;
+            }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    downImage(url, targetFile);
+                }
+            }).start();
+        }
+    }
+
+    private void downImage(final String url, final File targetFile) {
+
+        Glide.with(MainActivity.this)
+                .download(url)
+                .into(new CustomTarget<File>() {
+
+                    @Override
+                    public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+                        try {
+                            FileUtil.copyFile(resource, targetFile);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 
     private void findViewById() {
@@ -73,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void downImage() {
-        //        String url = "https://cdn.azoyaclub.com/FiGPcZ3xXkoTwHM0nghTGCRhH6AW";
+//        String url = "https://cdn.azoyaclub.com/FiGPcZ3xXkoTwHM0nghTGCRhH6AW";
 //        final String url = "https://cdn.azoyaclub.com/Fq2JaDTlewwp7DfYDjHaBaNsZk_p";
 
 //        final String url = "http://ojchzlu04.bkt.clouddn.com/Flfrt_xgSvGYERWBmsjHnwm5vYsV";
@@ -129,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void glideImage() {
-        //        String url = "https://cdn.azoyaclub.com/FiGPcZ3xXkoTwHM0nghTGCRhH6AW";
+//        String url = "https://cdn.azoyaclub.com/FiGPcZ3xXkoTwHM0nghTGCRhH6AW";
 //        final String url = "https://cdn.azoyaclub.com/Fq2JaDTlewwp7DfYDjHaBaNsZk_p";
 
         final String url = "http://ojchzlu04.bkt.clouddn.com/Flfrt_xgSvGYERWBmsjHnwm5vYsV";
@@ -260,11 +320,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        setOneTabChecked(false, bean);
-        setTwoTabChecked(false, bean);
-        setThreeTabChecked(false, bean);
-        setFourTabChecked(false, bean);
-        setFiveTabChecked(false, bean);
+        setNormalTab();
 
         switch (view.getId()) {
             case R.id.button:
@@ -290,20 +346,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setNormalTab() {
+        setOneTabChecked(false, bean);
+        setTwoTabChecked(false, bean);
+        setThreeTabChecked(false, bean);
+        setFourTabChecked(false, bean);
+        setFiveTabChecked(false, bean);
+    }
+
 
     private void setOneTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-            GlideUtil.show(bean.getIndexActive(), mIvTabOne, R.mipmap.tab_main_pressed);
+            File targetFile = StorageUtils.getTargetFile(this, bean.getMyActive());
+            GlideUtil.showFile(targetFile, mIvTabOne,R.mipmap.tab_main_pressed);
         } else {
-            GlideUtil.show(bean.getIndex(), mIvTabOne, R.mipmap.tab_main_normal);
+            File targetFile = StorageUtils.getTargetFile(this, bean.getMy());
+            GlideUtil.showFile(targetFile, mIvTabOne,R.mipmap.tab_main_normal);
         }
+
     }
 
     private void setTwoTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-            GlideUtil.show(bean.getSiteActive(), mIvTabTwo, R.mipmap.tab_site_pressed);
+//            GlideUtil.show(bean.getSiteActive(), mIvTabTwo, R.mipmap.tab_site_pressed);
+            File targetFile = StorageUtils.getTargetFile(this, bean.getSiteActive());
+            GlideUtil.showFile(targetFile, mIvTabTwo,R.mipmap.tab_site_pressed);
+
         } else {
-            GlideUtil.show(bean.getSite(), mIvTabTwo, R.mipmap.tab_site_normal);
+//            GlideUtil.show(bean.getSite(), mIvTabTwo, R.mipmap.tab_site_normal);
+
+            File targetFile = StorageUtils.getTargetFile(this, bean.getSite());
+            GlideUtil.showFile(targetFile, mIvTabTwo, R.mipmap.tab_site_normal);
         }
     }
 

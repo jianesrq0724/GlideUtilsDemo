@@ -78,6 +78,9 @@ public class ExtendedBean implements Serializable {
         private String my;
         private String myActive;
 
+        public TabIcons() {
+        }
+
         public TabIcons(String index, String indexActive, String site, String siteActive, String pd, String pdActive, String discover, String discoverActive, String my, String myActive) {
             this.index = index;
             this.indexActive = indexActive;

@@ -15,6 +15,19 @@ public class StorageUtils {
 
     private static final String EXTERNAL_STORAGE_PERMISSION = "android.permission.WRITE_EXTERNAL_STORAGE";
 
+
+    public static File getTargetFile(Context context, String url) {
+
+        if (StringUtil.isNullOrEmpty(url)) {
+            url = "";
+        }
+
+        String fileName = Md5Utils.md5(url);
+
+        File targetFile = new File(StorageUtils.getCacheDirectory(context, "image"), fileName);
+        return targetFile;
+    }
+
     /**
      * @param context 获取缓存目录
      * @return app的缓存目录
