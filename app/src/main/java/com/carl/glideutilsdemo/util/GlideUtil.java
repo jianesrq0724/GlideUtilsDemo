@@ -6,13 +6,18 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.carl.glideutilsdemo.BaseApplication;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -101,6 +106,11 @@ public class GlideUtil {
                 .into(mImage);
     }
 
+    public static void showFile(Context context, String fileName, ImageView mImage, int resId) {
+        File targetFile = StorageUtils.getTargetFile(context, fileName);
+        showFile(targetFile, mImage, resId);
+    }
+
     public static void showFile(File file, ImageView mImage, int resId) {
         if (file.exists()) {
             Glide.with(BaseApplication.getInstance())
@@ -147,6 +157,51 @@ public class GlideUtil {
                 .override(width, height)
                 .centerCrop()
                 .into(target);
+    }
+
+    public static void saveImageToLocal(Context context, String url) {
+        if (StringUtil.isNullOrEmpty(url)) {
+            return;
+        }
+
+        final File targetFile = StorageUtils.getTargetFile(context, url);
+        if (targetFile.exists()) {
+            return;
+        }
+
+        downImage(context, url, targetFile);
+
+    }
+
+
+    private static void downImage(final Context context, final String url, final File targetFile) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Glide.with(context.getApplicationContext())
+                        .download(url)
+                        .into(new CustomTarget<File>() {
+
+                            @Override
+                            public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+                                try {
+                                    FileUtil.copyFile(resource, targetFile);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                            }
+                        });
+            }
+        }).start();
+
+
     }
 
 }

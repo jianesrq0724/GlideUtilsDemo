@@ -17,16 +17,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.carl.glideutilsdemo.bean.ExtendedBean;
-import com.carl.glideutilsdemo.util.FileUtil;
 import com.carl.glideutilsdemo.util.GlideUtil;
-import com.carl.glideutilsdemo.util.StorageUtils;
-import com.carl.glideutilsdemo.util.StringUtil;
 import com.carl.glideutilsdemo.util.SystemUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
@@ -59,67 +55,27 @@ public class MainActivity extends AppCompatActivity {
 
         if (bean != null) {
 
-            saveImageToLocal(bean.getIndex());
-            saveImageToLocal(bean.getIndexActive());
+            GlideUtil.saveImageToLocal(this, bean.getIndex());
+            GlideUtil.saveImageToLocal(this, bean.getIndexActive());
 
-            saveImageToLocal(bean.getSite());
-            saveImageToLocal(bean.getSiteActive());
-
-
-            saveImageToLocal(bean.getPd());
-            saveImageToLocal(bean.getPdActive());
-
-            saveImageToLocal(bean.getDiscover());
-            saveImageToLocal(bean.getDiscoverActive());
+            GlideUtil.saveImageToLocal(this, bean.getSite());
+            GlideUtil.saveImageToLocal(this, bean.getSiteActive());
 
 
-            saveImageToLocal(bean.getMy());
-            saveImageToLocal(bean.getMyActive());
+            GlideUtil.saveImageToLocal(this, bean.getPd());
+            GlideUtil.saveImageToLocal(this, bean.getPdActive());
+
+            GlideUtil.saveImageToLocal(this, bean.getDiscover());
+            GlideUtil.saveImageToLocal(this, bean.getDiscoverActive());
+
+
+            GlideUtil.saveImageToLocal(this, bean.getMy());
+            GlideUtil.saveImageToLocal(this, bean.getMyActive());
         }
 
 
-
-
     }
 
-    private void saveImageToLocal(final String url) {
-        if (!StringUtil.isNullOrEmpty(url)) {
-
-            final File targetFile = StorageUtils.getTargetFile(this, url);
-            if (targetFile.exists()) {
-                return;
-            }
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    downImage(url, targetFile);
-                }
-            }).start();
-        }
-    }
-
-    private void downImage(final String url, final File targetFile) {
-
-        Glide.with(MainActivity.this)
-                .download(url)
-                .into(new CustomTarget<File>() {
-
-                    @Override
-                    public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
-                        try {
-                            FileUtil.copyFile(resource, targetFile);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                    }
-                });
-    }
 
     private void findViewById() {
         imageView = findViewById(R.id.imageView);
@@ -354,54 +310,45 @@ public class MainActivity extends AppCompatActivity {
         setFiveTabChecked(false, bean);
     }
 
-
     private void setOneTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-            File targetFile = StorageUtils.getTargetFile(this, bean.getMyActive());
-            GlideUtil.showFile(targetFile, mIvTabOne,R.mipmap.tab_main_pressed);
+            GlideUtil.showFile(this, bean.getMyActive(), mIvTabOne, R.mipmap.tab_main_pressed);
         } else {
-            File targetFile = StorageUtils.getTargetFile(this, bean.getMy());
-            GlideUtil.showFile(targetFile, mIvTabOne,R.mipmap.tab_main_normal);
+            GlideUtil.showFile(this, bean.getMy(), mIvTabOne, R.mipmap.tab_main_normal);
         }
 
     }
 
     private void setTwoTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-//            GlideUtil.show(bean.getSiteActive(), mIvTabTwo, R.mipmap.tab_site_pressed);
-            File targetFile = StorageUtils.getTargetFile(this, bean.getSiteActive());
-            GlideUtil.showFile(targetFile, mIvTabTwo,R.mipmap.tab_site_pressed);
-
+            GlideUtil.showFile(this, bean.getSiteActive(), mIvTabTwo, R.mipmap.tab_site_pressed);
         } else {
-//            GlideUtil.show(bean.getSite(), mIvTabTwo, R.mipmap.tab_site_normal);
-
-            File targetFile = StorageUtils.getTargetFile(this, bean.getSite());
-            GlideUtil.showFile(targetFile, mIvTabTwo, R.mipmap.tab_site_normal);
+            GlideUtil.showFile(this, bean.getSite(), mIvTabTwo, R.mipmap.tab_site_normal);
         }
     }
 
     private void setThreeTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-            GlideUtil.show(bean.getPdActive(), mIvTabThree, R.mipmap.tab_group_buy_pressed);
+            GlideUtil.showFile(this, bean.getPdActive(), mIvTabThree, R.mipmap.tab_group_buy_pressed);
         } else {
-            GlideUtil.show(bean.getPd(), mIvTabThree, R.mipmap.tab_group_buy_normal);
+            GlideUtil.showFile(this, bean.getPd(), mIvTabThree, R.mipmap.tab_group_buy_normal);
         }
     }
 
     private void setFourTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-            GlideUtil.show(bean.getDiscoverActive(), mIvTabFour, R.mipmap.tab_found_pressed);
+            GlideUtil.showFile(this, bean.getDiscoverActive(), mIvTabFour, R.mipmap.tab_found_pressed);
         } else {
-            GlideUtil.show(bean.getDiscover(), mIvTabFour, R.mipmap.tab_found_normal);
+            GlideUtil.showFile(this, bean.getDiscover(), mIvTabFour, R.mipmap.tab_found_normal);
         }
     }
 
 
     private void setFiveTabChecked(boolean isChecked, ExtendedBean.TabIcons bean) {
         if (isChecked) {
-            GlideUtil.show(bean.getMyActive(), mIvTabFive, R.mipmap.tab_mine_pressed);
+            GlideUtil.showFile(this, bean.getMyActive(), mIvTabFive, R.mipmap.tab_mine_pressed);
         } else {
-            GlideUtil.show(bean.getMy(), mIvTabFive, R.mipmap.tab_mine_normal);
+            GlideUtil.showFile(this, bean.getMy(), mIvTabFive, R.mipmap.tab_mine_normal);
         }
 
 
